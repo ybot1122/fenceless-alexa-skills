@@ -53,6 +53,56 @@ var Blah = (function() {
                 autohide: 1
               }
             });
+          } else if (appName === "Headline Hitter") {
+            var topic = msgAttrs.content.StringValue;
+            if (topic === "top") { topic = "home"; }
+            var url = "https://api.nytimes.com/svc/topstories/v2/" + topic + ".json";
+            url += "?api-key=284edb50e7c4e855497c5135176c9f14:17:67515972";
+            
+            var oReq = new XMLHttpRequest();
+            oReq.addEventListener("load", function() {
+              var res = JSON.parse(oReq.responseText);
+              var story = res.results[0];
+              var byline = story.byline;
+              var title = story.title;
+              var abstract = story.abstract;
+              var short_url = story.short_url;
+              var div_container = document.getElementById('modern-informer');
+              div_container.innerHTML = '';
+
+              var div_title = document.createElement('h3');
+              div_title.innerHTML = title;
+
+              var div_byline = document.createElement('div');
+              div_byline.innerHTML = byline;
+              div_byline.id = 'mi_byline';
+
+              var div_abstract = document.createElement('div');
+              div_abstract.innerHTML = abstract;
+              div_abstract.id = 'mi_abstract';
+
+              var div_url = document.createElement('a');
+              div_url.innerHTML = "full story: " + short_url;
+              div_url.setAttribute('href', short_url);
+
+              div_container.appendChild(div_title);
+              div_container.appendChild(div_byline);
+              if (story.multimedia && story.multimedia.length > 0) {
+
+                story.multimedia.sort(function(a, b) {
+                  return b.width - a.width;
+                });
+                console.log(story.multimedia);
+
+                var div_img = document.createElement('img');
+                div_img.setAttribute('src', story.multimedia[0].url);
+                div_container.appendChild(div_img);
+              }
+              div_container.appendChild(div_abstract);
+              div_container.appendChild(div_url);
+            });
+            oReq.open("GET", url);
+            oReq.send()
           } else {
             console.error("unknown app");
           }
