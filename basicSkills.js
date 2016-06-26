@@ -17,7 +17,7 @@ exports.handler = function (event, context) {
         var messAttrs = {};
         messAttrs.app = {
             DataType: 'String',
-            StringValue: 'BumpinFinds'
+            StringValue: 'Mash And Jam'
         };
         if (event.request.type === "LaunchRequest") {
             speechletResponse = buildSpeechletResponse("Let's do this");
@@ -25,7 +25,7 @@ exports.handler = function (event, context) {
                 DataType: 'String',
                 StringValue: 'y6n0XsiX_QQ'
             };
-            writeToSqs('BumpinFinds::Recommendation', context, speechletResponse, messAttrs);
+            writeToSqs('Mash And Jam::Recommendation', context, speechletResponse, messAttrs);
         } else if (event.request.type === "IntentRequest") {
             var intentName = event.request.intent.name;
             var suffix;
@@ -33,6 +33,11 @@ exports.handler = function (event, context) {
                 DataType: 'String'
             };
             switch(intentName) {
+                case "RecommendMe":
+                    suffix = 'Recommendation';
+                    speechletResponse = buildSpeechletResponse("Lets do this");
+                    messAttrs.video.StringValue = 'y6n0XsiX_QQ';
+                    break;
                 case "PushMe":
                     suffix = 'pregame';
                     speechletResponse = buildSpeechletResponse("Lets Bump This Yo");
@@ -45,13 +50,13 @@ exports.handler = function (event, context) {
                     break;
                 case "MotivateMe":
                     suffix = 'hyped';
-                    speechletResponse = buildSpeechletResponse("");
+                    speechletResponse = buildSpeechletResponse("Who Gonna Stop Us");
                     messAttrs.video.StringValue = 'Ss71qissgfU';
                     break;
                 default:
                     throw "unspecified intent";
             }
-            writeToSqs('BumpinFinds::' + suffix, context, speechletResponse, messAttrs);
+            writeToSqs('Mash And Jam::' + suffix, context, speechletResponse, messAttrs);
         }
     } catch (e) {
         context.fail("Exception: " + e);

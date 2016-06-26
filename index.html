@@ -4,6 +4,11 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Read SQS Sample</title>
+    <script>
+      // globals
+      var player;
+      var componentsLoaded = false;
+    </script>
     <script src="./aws-custom.js"></script>
     <link rel="stylesheet" type="text/css" href="./bootstrap.css" />
     <style>
@@ -50,7 +55,7 @@
 
   <div id="main" class="container-fluid">
     <div class="row">
-      <div class="player-wrapper col-xs-12 col-sm-3">
+      <div id="bumpin-finds" class="player-wrapper col-xs-12 col-sm-3">
         <div id="player"></div>
       </div>
       <div class="col-xs-12 col-sm-9">
@@ -61,27 +66,16 @@
 
   <script src="./sqs.js"></script>
   <script>
-    var Yuck = (function() {
+    // Youtube
+    (function() {
       var tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }());
 
-    var player;
     function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
-        height: '100%',
-        videoId: 'y6n0XsiX_QQ',
-        playerVars: {
-          autoplay: 1,
-          controls: 0,
-          disablekb: 1,
-          fs: 0,
-          rel: 0,
-          autohide: 1
-        }
-      });
+      componentsLoaded = true;
     }
   </script>
 </body>
