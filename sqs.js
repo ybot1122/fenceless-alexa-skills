@@ -27,8 +27,35 @@ var Blah = (function() {
       } else {
         console.log(data);
         if (data.Messages[0]) {
-          var myData = data.Messages[0].Body;
-          document.getElementById("sqsMessage").innerHTML = myData;
+          var myMessage = data.Messages[0]
+          document.getElementById("sqsMessage").innerHTML = myMessage.Body;
+
+          var msgAttrs = myMessage.MessageAttributes;
+          var appName = msgAttrs.app.StringValue;
+          console.log(appName);
+          if (appName === "Mash And Jam") {
+            var div_player = document.createElement('div');
+            var div_container = document.getElementById('mash-and-jam');
+            div_player.id = 'player';
+            div_container.innerHTML = '';
+            div_container.appendChild(div_player);
+
+            var vid = msgAttrs.video.StringValue;
+            player = new YT.Player('player', {
+              height: '100%',
+              videoId: vid,
+              playerVars: {
+                autoplay: 1,
+                controls: 0,
+                disablekb: 1,
+                fs: 0,
+                rel: 0,
+                autohide: 1
+              }
+            });
+          } else {
+            console.error("unknown app");
+          }
         }
       }
 

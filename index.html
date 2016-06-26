@@ -18,6 +18,12 @@
         letter-spacing: 2.5px;
       }
 
+      h3 {
+        text-align: center;
+        margin: 0px;
+        padding: 0px;
+      }
+
       h1, h2 {
         text-align: center;
         height: 50px;
@@ -36,8 +42,13 @@
       @media (min-width: 768px) {
         #player {
           height: 25vw;
-          width: 100%;
         }
+      }
+
+      .component {
+        margin: 5px;
+        padding: 5px;
+        border: 1px black dashed;
       }
 
     </style>
@@ -55,8 +66,12 @@
 
   <div id="main" class="container-fluid">
     <div class="row">
-      <div id="bumpin-finds" class="player-wrapper col-xs-12 col-sm-3">
-        <div id="player"></div>
+      <div class="col-xs-12 col-sm-3">
+        <div id="mash-and-jam" class="component">
+          <div id="player">
+            <h3>Mash &amp; Jam</h3>
+          </div>
+        </div>
       </div>
       <div class="col-xs-12 col-sm-9">
         <h3>Headliners</h3>
