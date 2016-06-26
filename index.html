@@ -5,11 +5,60 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Read SQS Sample</title>
     <script src="./aws-custom.js"></script>
+    <link rel="stylesheet" type="text/css" href="./bootstrap.css" />
+    <style>
+
+      body {
+        font-variant: small-caps;
+        letter-spacing: 2.5px;
+      }
+
+      h1, h2 {
+        text-align: center;
+        height: 50px;
+      }
+
+      #sqsMessage {
+        border-bottom: 1px black solid;
+        font-style: italic;
+      }
+
+      #player {
+        height: auto;
+        width: 100%;
+      }
+
+      @media (min-width: 768px) {
+        #player {
+          height: 50vw;
+          width: 100%;
+        }
+      }
+
+    </style>
 </head>
 <body>
-  <h1>What's your favorite color?</h1>
-  <div id="sqsMessage"></div>
-  <div id="player"></div>
+
+
+  <div id="header">
+    <h1>Fenceless</h1>
+  </div>
+
+  <div>
+    <h2 id="last-message"><span id="sqsMessage">(say something)</span></h2>
+  </div>
+
+  <div id="main" class="container-fluid">
+    <div class="row">
+      <div class="player-wrapper col-xs-12 col-sm-8">
+        <div id="player"></div>
+      </div>
+      <div class="col-xs-12 col-sm-4">
+        <h3>Headliners</h3>
+        <p>ISIS and Brexit and Trump</p>
+      </div>
+  </div>
+
   <script src="./sqs.js"></script>
   <script>
     var Yuck = (function() {
@@ -22,11 +71,15 @@
     var player;
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
-        height: '390',
-        width: '640',
+        height: '100%',
         videoId: 'y6n0XsiX_QQ',
-        events: {
-          'onReady': function(e) { e.target.playVideo() }
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          rel: 0,
+          autohide: 1
         }
       });
     }
