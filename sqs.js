@@ -13,7 +13,6 @@ var Blah = (function() {
   var sqs = new AWS.SQS();
 
   function getQ() {
-    console.log('called');
     var params = {
       QueueUrl: sqsUrl, /* required */
       VisibilityTimeout: 0,
@@ -30,7 +29,6 @@ var Blah = (function() {
         if (data.Messages[0]) {
           var myData = data.Messages[0].Body;
           document.getElementById("sqsMessage").innerHTML = myData;
-          console.log(data.Messages[0].MessageAttributes);
         }
       }
 
@@ -49,4 +47,5 @@ var Blah = (function() {
   }
 
   getQ();
+  setInterval(getQ, 21000);
 }());
