@@ -17,7 +17,8 @@ var Blah = (function() {
     var params = {
       QueueUrl: sqsUrl, /* required */
       VisibilityTimeout: 0,
-      WaitTimeSeconds: 20
+      WaitTimeSeconds: 20,
+      MessageAttributeNames: ['All']
     };
 
     // get message from sqs
@@ -28,7 +29,8 @@ var Blah = (function() {
         console.log(data);
         if (data.Messages[0]) {
           var myData = data.Messages[0].Body;
-          document.getElementById("sqsMessage").innerHTML=myData;
+          document.getElementById("sqsMessage").innerHTML = myData;
+          console.log(data.Messages[0].MessageAttributes);
         }
       }
 

@@ -21,7 +21,7 @@ exports.handler = function (event, context) {
                     DataType: 'String',
                     StringValue: 'MotivationBus'
                 },
-                video: {
+                content: {
                     DataType: 'String',
                     StringValue: 'y6n0XsiX_QQ'
                 }
@@ -39,7 +39,7 @@ exports.handler = function (event, context) {
 function writeToSqs(msg, context, speechletResponse, mattrs) {
     var queue = new AWS.SQS();
     var params = {
-        MessageBody: "message is " + msg,
+        MessageBody: msg,
         QueueUrl: sqsURL,
         MessageAttributes: mattrs
     };
