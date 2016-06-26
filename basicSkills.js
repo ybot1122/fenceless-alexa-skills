@@ -33,20 +33,16 @@ exports.handler = function (event, context) {
             };
             switch(intentName) {
                 case "PushMe":
-                    speechletResponse = buildSpeechletResponse("Push It");
-                    messAttrs.video.StringValue = 'nI4PFf0YBHI';
+                    speechletResponse = buildSpeechletResponse("Lets Bump This Yo");
+                    messAttrs.video.StringValue = 'G5w7MIKwSO0';
                     break;
                 case "SootheMe":
-                    speechletResponse = buildSpeechletResponse("Soothe It");
-                    messAttrs.video.StringValue = 'pCVF0CSRTYA';
+                    speechletResponse = buildSpeechletResponse("Low Key Turn Up");
+                    messAttrs.video.StringValue = 'Zovq8G3hcc0';
                     break;
                 case "MotivateMe":
-                    speechletResponse = buildSpeechletResponse("Motivate It");
-                    messAttrs.video.StringValue = '2iyb2ovLN3E';
-                    break;
-                case "BeastMode":
-                    speechletResponse = buildSpeechletResponse("Break It");
-                    messAttrs.video.StringValue = 'G5w7MIKwSO0';
+                    speechletResponse = buildSpeechletResponse("");
+                    messAttrs.video.StringValue = 'Ss71qissgfU';
                     break;
                 default:
                     throw "unspecified intent";
