@@ -40,17 +40,17 @@ exports.handler = function (event, context) {
                     messAttrs.content.StringValue = 'top';
                     break;
                 case "SportsHeadline":
-                    suffix = 'Sports';
+                    suffix = 'Top Sports Story';
                     speechletResponse = buildSpeechletResponse("Sports");
                     messAttrs.content.StringValue = 'sports';
                     break;
                 case "PoliticsHeadline":
-                    suffix = 'Politics';
+                    suffix = 'Top Politics Story';
                     speechletResponse = buildSpeechletResponse("Politics");
                     messAttrs.content.StringValue = 'politics';
                     break;
                 case "WorldHeadline":
-                    suffix = 'chillin';
+                    suffix = 'Top World Story';
                     speechletResponse = buildSpeechletResponse("World");
                     messAttrs.content.StringValue = 'world';
                     break;
