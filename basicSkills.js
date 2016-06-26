@@ -17,7 +17,7 @@ exports.handler = function (event, context) {
         var messAttrs = {};
         messAttrs.app = {
             DataType: 'String',
-            StringValue: 'MotivationBus'
+            StringValue: 'BumpinFinds'
         };
         if (event.request.type === "LaunchRequest") {
             speechletResponse = buildSpeechletResponse("Let's do this");
@@ -25,29 +25,33 @@ exports.handler = function (event, context) {
                 DataType: 'String',
                 StringValue: 'y6n0XsiX_QQ'
             };
-            writeToSqs('MotivationBus::Launch', context, speechletResponse, messAttrs);
+            writeToSqs('BumpinFinds::Recommendation', context, speechletResponse, messAttrs);
         } else if (event.request.type === "IntentRequest") {
             var intentName = event.request.intent.name;
+            var suffix;
             messAttrs.video = {
                 DataType: 'String'
             };
             switch(intentName) {
                 case "PushMe":
+                    suffix = 'pregame';
                     speechletResponse = buildSpeechletResponse("Lets Bump This Yo");
                     messAttrs.video.StringValue = 'G5w7MIKwSO0';
                     break;
                 case "SootheMe":
+                    suffix = 'chillin';
                     speechletResponse = buildSpeechletResponse("Low Key Turn Up");
                     messAttrs.video.StringValue = 'Zovq8G3hcc0';
                     break;
                 case "MotivateMe":
+                    suffix = 'hyped';
                     speechletResponse = buildSpeechletResponse("");
                     messAttrs.video.StringValue = 'Ss71qissgfU';
                     break;
                 default:
                     throw "unspecified intent";
             }
-            writeToSqs('MotivationBus::Intent', context, speechletResponse, messAttrs);
+            writeToSqs('BumpinFinds::' + suffix, context, speechletResponse, messAttrs);
         }
     } catch (e) {
         context.fail("Exception: " + e);
