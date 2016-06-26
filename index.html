@@ -5,59 +5,36 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Read SQS Sample</title>
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.43.min.js"></script>
-    <script>
-      var cognitoIdentityPoolID = 'us-east-1:48326d47-5092-42a0-baa7-1639194edd04';
-      var sqsUrl = 'https://sqs.us-east-1.amazonaws.com/365496274414/colorexpert';
-      var awsRegion = 'us-east-1';
-
-      // set the default config object
-      var creds = new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: cognitoIdentityPoolID
-      });
-
-      AWS.config.credentials = creds;
-      AWS.config.region = awsRegion ;
-      var sqs = new AWS.SQS();
-   
-      function getQ() {
-        var params = {
-          QueueUrl: sqsUrl, /* required */
-          VisibilityTimeout: 0,
-          WaitTimeSeconds: 20
-        };
-
-        // get message from sqs
-        sqs.receiveMessage(params, function(err, data) {
-          if (err) {
-            console.log(err, err.stack);
-          } else {
-            console.log(data);
-            if (data.Messages[0]) {
-              var myData = data.Messages[0].Body;
-              document.getElementById("sqsMessage").innerHTML=myData;
-            }
-          }
-
-          // delete the sqs message
-          var params = {
-            QueueUrl: sqsUrl,
-            ReceiptHandle: data.Messages[0].ReceiptHandle
-          };
-          sqs.deleteMessage(params, function(err, data) {
-            if (err) {
-              console.log(err, err.stack);
-            } else {
-              console.log(data);
-            }
-          });
-        console.log(data);
-        getQ();
-      });
-    }
-  </script>
+    <script src="./sqs.js"></script>
 </head>
 <body onload="getQ()">
   <h1>What's your favorite color?</h1>
   <div id="sqsMessage"></div>
+  <div id="player"></div>
+  <script>
+    // 2. This code loads the IFrame Player API code asynchronously.
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // 3. This function creates an <iframe> (and YouTube player)
+    var player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '390',
+        width: '640',
+        videoId: 'PKTaO1puZ0w',
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    }
+
+    // 4. The API will call this function when the video player is ready.
+    function onPlayerReady(event) {
+      event.target.playVideo();
+    }
+  </script>
 </body>
 </html>
