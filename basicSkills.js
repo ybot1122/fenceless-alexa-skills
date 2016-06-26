@@ -15,19 +15,42 @@ exports.handler = function (event, context) {
     try {
         var speechletResponse;
         var messAttrs = {};
+        messAttrs.app = {
+            DataType: 'String',
+            StringValue: 'MotivationBus'
+        };
         if (event.request.type === "LaunchRequest") {
-            speechletResponse = buildSpeechletResponse("hey I am the launch");
-            messAttrs.app = {
-                DataType: 'String',
-                StringValue: 'MotivationBus'
-            };
-            messAttrs.content = {
+            speechletResponse = buildSpeechletResponse("Let's do this");
+            messAttrs.video = {
                 DataType: 'String',
                 StringValue: 'y6n0XsiX_QQ'
             };
             writeToSqs('MotivationBus::Launch', context, speechletResponse, messAttrs);
         } else if (event.request.type === "IntentRequest") {
-            speechletResponse = buildSpeechletResponse("hey I am the intent");
+            var intentName = event.request.intent.name;
+            messAttrs.video = {
+                DataType: 'String'
+            };
+            switch(intentName) {
+                case "PushMe":
+                    speechletResponse = buildSpeechletResponse("Push It");
+                    messAttrs.video.StringValue = 'nI4PFf0YBHI';
+                    break;
+                case "SootheMe":
+                    speechletResponse = buildSpeechletResponse("Soothe It");
+                    messAttrs.video.StringValue = 'pCVF0CSRTYA';
+                    break;
+                case "MotivateMe":
+                    speechletResponse = buildSpeechletResponse("Motivate It");
+                    messAttrs.video.StringValue = '2iyb2ovLN3E';
+                    break;
+                case "BeastMode":
+                    speechletResponse = buildSpeechletResponse("Break It");
+                    messAttrs.video.StringValue = 'G5w7MIKwSO0';
+                    break;
+                default:
+                    throw "unspecified intent";
+            }
             writeToSqs('MotivationBus::Intent', context, speechletResponse, messAttrs);
         }
     } catch (e) {
