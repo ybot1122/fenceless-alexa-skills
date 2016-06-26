@@ -1,0 +1,22 @@
+{
+  "intents": [
+    {
+      "intent": "PushMe"
+    },
+    {
+      "intent": "SootheMe"
+    },
+    {
+      "intent": "MotivateMe"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}
