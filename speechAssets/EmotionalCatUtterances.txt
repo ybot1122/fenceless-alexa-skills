@@ -1,0 +1,11 @@
+SadCat sad
+SadCat I has sad
+SadCat I can has sad
+
+HappyCat happy
+HappyCat I has happy
+HappyCat I can has happy
+
+GrumpyCat grumpy
+GrumpyCat I has grumpy
+GrumpyCat I can has grumpy

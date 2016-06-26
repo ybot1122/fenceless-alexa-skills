@@ -102,7 +102,49 @@ var Blah = (function() {
               div_container.appendChild(div_url);
             });
             oReq.open("GET", url);
-            oReq.send()
+            oReq.send();
+
+          } else if (appName === "Emotional Cat") {
+            var oReq = new XMLHttpRequest();
+            var emotion = msgAttrs.content.StringValue;
+            if (emotion !== 'launched') {
+              var url = "https://api.imgur.com/3/gallery/search/time?q=" + emotion + "%20cat";
+              oReq.addEventListener("load", function() {
+                var res = JSON.parse(oReq.responseText);
+                var cat = res.data[5];
+                console.log(res);
+                var cat_title = cat.title;
+                var cat_poster = cat.account_url;
+                var cat_link = cat.link;
+
+                var div_container = document.getElementById('emotional-cat');
+                div_container.innerHTML = '';
+
+                var div_title = document.createElement('h3');
+                div_title.innerHTML = cat_title;
+
+                var div_byline = document.createElement('div');
+                div_byline.innerHTML = "Posted by: " + cat_poster;
+
+                var div_img = document.createElement('img');
+                if (cat.link) {
+                  div_img.setAttribute('src', cat.link);
+                } else if (cat.mp4) {
+                  div_img.setAttribute('src', cat.mp4);
+                } else if (cat.gifv) {
+                  div_img.setAttribute('src', cat.gifv);
+                } else {
+                  div_img.setAttribute('src', "https://i.imgur.com/" + cat.cover + ".jpg");
+                }
+                div_container.appendChild(div_title);
+                div_container.appendChild(div_byline);
+                div_container.appendChild(div_img);
+              });
+              oReq.open("GET", url);
+              oReq.setRequestHeader("Authorization", "Client-ID 757517983818ba0");
+              oReq.send()              
+            }
+
           } else {
             console.error("unknown app");
           }
