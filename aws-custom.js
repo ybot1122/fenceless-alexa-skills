@@ -6735,15 +6735,12 @@ _xamzrequire = function e(t, n, r) {
                         try {
                             listener.apply(self, args);
                         } catch (err) {
-                            // TODO: EVIL LAUGH
-                            console.log('laughs maniacally');
+                            error = AWS.util.error(error || new Error(), err);
                         }
-                        /*
                         if (error && self._haltHandlersOnError) {
                             doneCallback.call(self, error);
                             return;
                         }
-                        */
                     }
                 }
                 doneCallback.call(self, error);

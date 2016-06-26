@@ -18,11 +18,11 @@ exports.handler = function (event, context) {
             speechletResponse = buildSpeechletResponse("hey I am the launch");
             var messAttrs = {
                 app: {
-                    DataType: 'STRING_VALUE',
+                    DataType: 'String',
                     StringValue: 'MotivationBus'
                 },
                 video: {
-                    DataType: 'STRING_VALUE',
+                    DataType: 'String',
                     StringValue: 'y6n0XsiX_QQ'
                 }
             };
