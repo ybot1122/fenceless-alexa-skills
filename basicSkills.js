@@ -13,25 +13,35 @@ AWS.config.region = 'us-east-1';
 var sqsURL = 'https://sqs.us-east-1.amazonaws.com/365496274414/colorexpert';
 exports.handler = function (event, context) {
     try {
-        console.log("event.session.application.applicationId=" + event.session.application.applicationId);
         var speechletResponse;
         if (event.request.type === "LaunchRequest") {
             speechletResponse = buildSpeechletResponse("hey I am the launch");
-            writeToSqs('launch', context, speechletResponse);
+            var messAttrs = {
+                app: {
+                    DataType: 'STRING_VALUE',
+                    StringValue: 'MotivationBus'
+                },
+                video: {
+                    DataType: 'STRING_VALUE',
+                    StringValue: 'y6n0XsiX_QQ'
+                }
+            };
+            writeToSqs('MotivationBus::Launch', context, speechletResponse, messAttrs);
         } else if (event.request.type === "IntentRequest") {
             speechletResponse = buildSpeechletResponse("hey I am the intent");
-            writeToSqs('launch', context, speechletResponse);
+            writeToSqs('MotivationBus::Intent', context, speechletResponse, data);
         }
     } catch (e) {
         context.fail("Exception: " + e);
     }
 };
 
-function writeToSqs(msg, context, speechletResponse) {
+function writeToSqs(msg, context, speechletResponse, mattrs) {
     var queue = new AWS.SQS();
     var params = {
         MessageBody: "message is " + msg,
-        QueueUrl: sqsURL
+        QueueUrl: sqsURL,
+        MessageAttributes: mattrs
     };
     
     console.log('ooooga we writin to ' + sqsURL);
