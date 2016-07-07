@@ -1,9 +1,6 @@
 
 /**
-    Receives an Alexa request
-    Diffrentiates between Launch and Intent
-    Writes to SQS
-    and responds with a speechlet
+    MODERN INFORMER
 **/
 
 'use strict';
@@ -12,59 +9,83 @@ var AWS = require("aws-sdk");
 AWS.config.region = 'us-east-1';
 var sqsURL = 'https://sqs.us-east-1.amazonaws.com/365496274414/colorexpert';
 var appName = 'Headline Hitter';
+var http = require('http');
 exports.handler = function (event, context) {
     try {
-        var speechletResponse;
         var messAttrs = {};
         messAttrs.app = {
             DataType: 'String',
             StringValue: appName
         };
         if (event.request.type === "LaunchRequest") {
-            speechletResponse = buildSpeechletResponse("Top Story");
+            var speechletResponse = buildSpeechletResponse("Top Story");
             messAttrs.content = {
                 DataType: 'String',
                 StringValue: 'top'
             };
-            writeToSqs(appName + '::' + 'Top Story', context, speechletResponse, messAttrs);
+            writeToSqs(appName + '::' + 'Top Story', messAttrs);
+            context.succeed(buildResponse(speechletResponse));
         } else if (event.request.type === "IntentRequest") {
             var intentName = event.request.intent.name;
             var suffix;
+            var topic;
             messAttrs.content = {
                 DataType: 'String'
             };
             switch(intentName) {
                 case "TopHeadline":
                     suffix = 'Top Story';
-                    speechletResponse = buildSpeechletResponse("Top Story");
                     messAttrs.content.StringValue = 'top';
+                    topic = 'home';
                     break;
                 case "SportsHeadline":
                     suffix = 'Top Sports Story';
-                    speechletResponse = buildSpeechletResponse("Sports");
                     messAttrs.content.StringValue = 'sports';
+                    topic = 'sports';
                     break;
                 case "PoliticsHeadline":
                     suffix = 'Top Politics Story';
-                    speechletResponse = buildSpeechletResponse("Politics");
                     messAttrs.content.StringValue = 'politics';
+                    topic = 'politics';
                     break;
                 case "WorldHeadline":
                     suffix = 'Top World Story';
-                    speechletResponse = buildSpeechletResponse("World");
                     messAttrs.content.StringValue = 'world';
+                    topic = 'world';
                     break;
                 default:
                     throw "unspecified intent";
             }
-            writeToSqs(appName + '::' + suffix, context, speechletResponse, messAttrs);
+            writeToSqs(appName + '::' + suffix, messAttrs);
+            requestHeadline(context, topic);
         }
     } catch (e) {
         context.fail("Exception: " + e);
     }
 };
 
-function writeToSqs(msg, context, speechletResponse, mattrs) {
+function requestHeadline(context, topic) {
+    var url = "https://api.nytimes.com/svc/topstories/v2/" + topic + ".json";
+    url += "?api-key=284edb50e7c4e855497c5135176c9f14:17:67515972";
+
+    var options = {
+        protocol: "https:",
+        host: "api.nytimes.com",
+        path: "/svc/topstories/v2/" + topic + ".json?api-key=284edb50e7c4e855497c5135176c9f14:17:67515972"
+    };
+
+    http.request(options, function(response) {
+      var res = JSON.parse(response);
+      var story = res.results[0];
+      var byline = story.byline;
+      var title = story.title;
+      var abstract = story.abstract;
+      var speechletResponse = buildSpeechletResponse(title);
+      context.succeed(buildResponse(speechletResponse));
+    }).end();
+}
+
+function writeToSqs(msg, mattrs) {
     var queue = new AWS.SQS();
     var params = {
         MessageBody: msg,
@@ -79,7 +100,6 @@ function writeToSqs(msg, context, speechletResponse, mattrs) {
         } else {
             console.log("message Sent");
         }
-        context.succeed(buildResponse(speechletResponse));
     });
 }
 
