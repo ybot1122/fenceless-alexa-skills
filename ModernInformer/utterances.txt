@@ -21,22 +21,22 @@ SportsHeadline tell me the top headline for sports
 
 PoliticsHeadline the top political headline
 PoliticsHeadline top political headline
-PoliticsHeadline top headline in political
-PoliticsHeadline top headline for political
+PoliticsHeadline top headline in political news
+PoliticsHeadline top headline for political news
 
 PoliticsHeadline what's the top political headline
-PoliticsHeadline what's the top headline for political
-PoliticsHeadline what's the top headline in political
+PoliticsHeadline what's the top headline for political news
+PoliticsHeadline what's the top headline in political news
 PoliticsHeadline what is the top political headline
-PoliticsHeadline what is the top headline for political
-PoliticsHeadline what is the top headline in political
+PoliticsHeadline what is the top headline for political news
+PoliticsHeadline what is the top headline in political news
 
 PoliticsHeadline give me the top political headline
-PoliticsHeadline give me the top headline in political
-PoliticsHeadline give me the top headline for political
+PoliticsHeadline give me the top headline in political news
+PoliticsHeadline give me the top headline for political news
 PoliticsHeadline tell me the top political headline
-PoliticsHeadline tell me the top headline in political
-PoliticsHeadline tell me the top headline for political
+PoliticsHeadline tell me the top headline in political news
+PoliticsHeadline tell me the top headline for political news
 
 PoliticsHeadline the top politics headline
 PoliticsHeadline top politics headline
