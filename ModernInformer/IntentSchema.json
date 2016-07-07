@@ -1,0 +1,13 @@
+{
+  "intents": [
+    {
+      "intent": "SportsHeadline"
+    },
+    {
+      "intent": "PoliticsHeadline"
+    },
+    {
+      "intent": "WorldHeadline"
+    }
+  ]
+}
