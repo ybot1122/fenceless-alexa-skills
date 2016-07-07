@@ -69,19 +69,28 @@ function requestHeadline(context, topic) {
     url += "?api-key=284edb50e7c4e855497c5135176c9f14:17:67515972";
 
     var options = {
-        protocol: "https:",
+        protocol: "http:",
         host: "api.nytimes.com",
         path: "/svc/topstories/v2/" + topic + ".json?api-key=284edb50e7c4e855497c5135176c9f14:17:67515972"
     };
 
     http.request(options, function(response) {
-      var res = JSON.parse(response);
-      var story = res.results[0];
-      var byline = story.byline;
-      var title = story.title;
-      var abstract = story.abstract;
-      var speechletResponse = buildSpeechletResponse(title);
-      context.succeed(buildResponse(speechletResponse));
+
+      var rawStr = "";
+      response.on('data', (chunk) => {
+        rawStr += chunk;
+      });
+
+      response.on('end', () => {
+        var res = JSON.parse(rawStr);
+        var story = res.results[0];
+        var byline = story.byline;
+        var title = story.title;
+        var abstract = story.abstract;
+        var speechletResponse = buildSpeechletResponse(title);
+        context.succeed(buildResponse(speechletResponse));
+      });
+
     }).end();
 }
 
@@ -93,12 +102,9 @@ function writeToSqs(msg, mattrs) {
         MessageAttributes: mattrs
     };
     
-    console.log('ooooga we writin to ' + sqsURL);
     queue.sendMessage(params, function (err, data) {
         if (err) {
             console.log(err, err.stack);
-        } else {
-            console.log("message Sent");
         }
     });
 }
