@@ -7,7 +7,6 @@
 
 var AWS = require("aws-sdk");
 AWS.config.region = 'us-east-1';
-var sqsURL = 'https://sqs.us-east-1.amazonaws.com/365496274414/colorexpert';
 var appName = 'Headline Hitter';
 var http = require('http');
 exports.handler = function (event, context) {
@@ -24,7 +23,6 @@ exports.handler = function (event, context) {
         DataType: 'String',
         StringValue: 'top'
       };
-      writeToSqs(appName + '::' + 'Top Story', messAttrs);
       context.succeed(buildResponse(speechletResponse, false));
     } else if (event.request.type === "IntentRequest") {
       var intentName = event.request.intent.name;
@@ -57,7 +55,6 @@ exports.handler = function (event, context) {
         default:
           throw "unspecified intent";
       }
-      writeToSqs(appName + '::' + suffix, messAttrs);
       requestHeadline(context, topic);
     }
   } catch (e) {
@@ -93,21 +90,6 @@ function requestHeadline(context, topic) {
       });
 
     }).end();
-}
-
-function writeToSqs(msg, mattrs) {
-    var queue = new AWS.SQS();
-    var params = {
-        MessageBody: msg,
-        QueueUrl: sqsURL,
-        MessageAttributes: mattrs
-    };
-    
-    queue.sendMessage(params, function (err, data) {
-        if (err) {
-            console.log(err, err.stack);
-        }
-    });
 }
 
 function buildSpeechletResponse(output) {
