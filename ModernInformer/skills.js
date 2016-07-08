@@ -19,13 +19,13 @@ exports.handler = function (event, context) {
     };
 
     if (event.request.type === "LaunchRequest") {
-      var speechletResponse = buildSpeechletResponse("Top Story");
+      var speechletResponse = buildSpeechletResponse("Would you like the top headline in sports, politics, or world?");
       messAttrs.content = {
         DataType: 'String',
         StringValue: 'top'
       };
       writeToSqs(appName + '::' + 'Top Story', messAttrs);
-      context.succeed(buildResponse(speechletResponse));
+      context.succeed(buildResponse(speechletResponse, false));
     } else if (event.request.type === "IntentRequest") {
       var intentName = event.request.intent.name;
       var suffix;
@@ -89,7 +89,7 @@ function requestHeadline(context, topic) {
         var title = story.title;
         var abstract = story.abstract;
         var speechletResponse = buildSpeechletResponse(title);
-        context.succeed(buildResponse(speechletResponse));
+        context.succeed(buildResponse(speechletResponse, true));
       });
 
     }).end();
@@ -119,10 +119,13 @@ function buildSpeechletResponse(output) {
     };
 }
 
-function buildResponse(speechletResponse) {
+function buildResponse(speechletResponse, endSession) {
     return {
         version: "1.0",
         sessionAttributes: {},
-        response: speechletResponse
+        response: {
+          outputSpeech: speechletResponse,
+          shouldEndSession: endSession
+        }
     };
 }
