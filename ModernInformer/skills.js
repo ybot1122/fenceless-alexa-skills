@@ -5,52 +5,27 @@
 
 'use strict';
 
-var AWS = require("aws-sdk");
-AWS.config.region = 'us-east-1';
-var appName = 'Headline Hitter';
+var appName = 'Modern Informer';
 var http = require('http');
 exports.handler = function (event, context) {
   try {
-    var messAttrs = {};
-    messAttrs.app = {
-      DataType: 'String',
-      StringValue: appName
-    };
-
     if (event.request.type === "LaunchRequest") {
+      // LaunchRequest
       var speechletResponse = buildSpeechletResponse("Would you like the top headline in sports, politics, or world?");
-      messAttrs.content = {
-        DataType: 'String',
-        StringValue: 'top'
-      };
       context.succeed(buildResponse(speechletResponse, false));
     } else if (event.request.type === "IntentRequest") {
+      // IntentRequest
       var intentName = event.request.intent.name;
-      var suffix;
       var topic;
-      messAttrs.content = {
-        DataType: 'String'
-      };
       switch(intentName) {
-        case "TopHeadline":
-          suffix = 'Top Story';
-          messAttrs.content.StringValue = 'top';
-          topic = 'home';
-          break;
         case "SportsHeadline":
-          suffix = 'Top Sports Story';
-          messAttrs.content.StringValue = 'sports';
-          topic = 'sports';
+          topic = "sports";
           break;
         case "PoliticsHeadline":
-          suffix = 'Top Politics Story';
-          messAttrs.content.StringValue = 'politics';
-          topic = 'politics';
+          topic = "politics";
           break;
         case "WorldHeadline":
-          suffix = 'Top World Story';
-          messAttrs.content.StringValue = 'world';
-          topic = 'world';
+          topic = "world";
           break;
         default:
           throw "unspecified intent";
@@ -62,6 +37,7 @@ exports.handler = function (event, context) {
   }
 };
 
+// routine to my GET call for headline from NYT
 function requestHeadline(context, topic) {
     var url = "https://api.nytimes.com/svc/topstories/v2/" + topic + ".json";
     url += "?api-key=284edb50e7c4e855497c5135176c9f14:17:67515972";
@@ -72,13 +48,16 @@ function requestHeadline(context, topic) {
         path: "/svc/topstories/v2/" + topic + ".json?api-key=284edb50e7c4e855497c5135176c9f14:17:67515972"
     };
 
+    // callback to be invoked when response is received
     http.request(options, function(response) {
-
       var rawStr = "";
+
+      // append data from stream
       response.on('data', (chunk) => {
         rawStr += chunk;
       });
 
+      // end of stream. build response and finish
       response.on('end', () => {
         var res = JSON.parse(rawStr);
         var story = res.results[0];
@@ -88,23 +67,19 @@ function requestHeadline(context, topic) {
         var speechletResponse = buildSpeechletResponse(title);
         context.succeed(buildResponse(speechletResponse, true));
       });
-
     }).end();
 }
 
 function buildSpeechletResponse(output) {
     return {
-        outputSpeech: {
-            type: "PlainText",
-            text: output
-        }
+      type: "PlainText",
+      text: output
     };
 }
 
 function buildResponse(speechletResponse, endSession) {
     return {
         version: "1.0",
-        sessionAttributes: {},
         response: {
           outputSpeech: speechletResponse,
           shouldEndSession: endSession
