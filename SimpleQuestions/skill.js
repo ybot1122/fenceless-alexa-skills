@@ -261,11 +261,15 @@ const globalHandlers = {
             if (this.attributes['playerone'].score <= 0) {
                 this.handler.state = GAME_STATES.START;
                 speech += " Player one died. Good game. You win, player two. Play another?";
+                this.attributes['playerone'] = null;
+                this.attributes['playertwo'] = null;
                 this.emit(':ask', speech);
                 return;
             } else if (this.attributes['playertwo'].score <= 0) {
                 this.handler.state = GAME_STATES.START;
                 speech += " Player two died. Good game. You win, player one. Play another?";
+                this.attributes['playerone'] = null;
+                this.attributes['playertwo'] = null;
                 this.emit(':ask', speech);
                 return;
             }
