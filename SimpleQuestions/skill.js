@@ -343,7 +343,7 @@ const globalHandlers = {
             this.attributes['selectedAction'] = null;
             this.attributes['activeQuestion'] = getQuestion();
 
-            if (this.attributes['roundsCompleted'] === 3) {
+            if (this.attributes['roundsCompleted'] === 2) {
                 this.handler.state = GAME_STATES.ROUNDTWO;
                 speech += ". It is time for round two. In this round you can attack or defend. ";
                 speech += ". " + enemy + " it is your turn now.";
