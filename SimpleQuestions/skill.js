@@ -145,6 +145,7 @@ const assignmentHandlers = Alexa.CreateStateHandler(GAME_STATES.ASSIGNMENT, {
             this.attributes['currentPlayer'] = 'playerone';
             this.attributes['selectedAction'] = null;
             this.attributes['activeQuestion'] = getQuestion();
+            this.attributes['roundsCompleted'] = 0;
             this.emit(':ask', 'Both players confirmed. Get ready for round one! In the first round you can attack. Player one is up first.', 'Player one, you can attack');
         }
     },
@@ -201,12 +202,68 @@ const roundOneHandlers = Alexa.CreateStateHandler(GAME_STATES.ROUNDONE, {
         const response_questionAsk = this.attributes['activeQuestion'].question;
 
         if (!this.attributes['selectedAction']) {
-            this.emit(':ask', 'Hey ' + player + ', you can attack');
+            this.emit(':ask', 'Hey ' + player + ', you can attack', 'Hey ' + player + ', you can attack');
         } else {
-            this.emit(':ask', player + ', ' + response_questionAsk, player + ', ' + response_questionAsk);
+            this.emit(':ask', player + ', ' + response_questionAsk, player + ', ' + response_questionAsk, player + ', ' + response_questionAsk, player + ', ' + response_questionAsk);
         }
     }
 
+});
+
+const roundTwoHandlers = Alexa.CreateStateHandler(GAME_STATES.ROUNDTWO, {
+    'AnswerQuestion': function() {
+        if (this.attributes['selectedAction']) {
+            this.emit('AnswerQuestion');
+        } else {
+            this.emit(':ask', 'You can attack or defend');
+        }
+    },
+
+    'AttackIntent': function() {
+        const player = (this.attributes['currentPlayer'] === 'playerone') ? 'player one' : 'player two';
+        const enemy = (this.attributes['currentPlayer'] === 'playerone') ? 'player two' : 'player one';
+        const response_questionAsk = this.attributes['activeQuestion'].question;
+
+        if (this.attributes['selectedAction']) {
+            this.emit(':ask', player + ', ' + response_questionAsk, player + ', ' + response_questionAsk);
+            return;
+        }
+
+        this.attributes['selectedAction'] = 'attack';
+
+        this.emit(':ask', player + ' wants to attack ' + enemy + '. ' + player + ', ' + response_questionAsk,  player + ', ' + response_questionAsk);
+    },
+
+    'DefendIntent': function() {
+        const player = (this.attributes['currentPlayer'] === 'playerone') ? 'player one' : 'player two';
+        const enemy = (this.attributes['currentPlayer'] === 'playerone') ? 'player two' : 'player one';
+        const response_questionAsk = this.attributes['activeQuestion'].question;
+
+        if (this.attributes['selectedAction']) {
+            this.emit(':ask', player + ', ' + response_questionAsk, player + ', ' + response_questionAsk);
+            return;
+        }
+
+        this.attributes['selectedAction'] = 'defend';
+
+        this.emit(':ask', player + ' wants to defend. ' + player + ', ' + response_questionAsk,  player + ', ' + response_questionAsk);
+    },
+
+
+    'AMAZON.StopIntent': function() {
+        this.emit(':tell', 'Bye');
+    },
+
+    'Unhandled': function() {
+        const player = (this.attributes['currentPlayer'] === 'playerone') ? 'player one' : 'player two';
+        const response_questionAsk = this.attributes['activeQuestion'].question;
+
+        if (!this.attributes['selectedAction']) {
+            this.emit(':ask', 'Hey ' + player + ', you can attack or defend', 'Hey ' + player + ', you can attack or defend');
+        } else {
+            this.emit(':ask', player + ', ' + response_questionAsk, player + ', ' + response_questionAsk, player + ', ' + response_questionAsk, player + ', ' + response_questionAsk);
+        }
+    }
 });
 
 const globalHandlers = {
@@ -247,13 +304,14 @@ const globalHandlers = {
                     speech += player + " successfully dealt one damage to " + enemy + ". ";
                     this.attributes[otherPlayer].score -= 1;
                 } else if (this.attributes['selectedAction'] === 'defend') {
-
+                    this.attributes[this.attributes['currentPlayer']].score += 1;
+                    speech += player + " successfully defended and increased their health by 1. ";
                 }
             } else {
                 if (this.attributes['selectedAction'] === 'attack') {
                     speech += player + " failed to do damage to " + enemy + ". ";
                 } else if (this.attributes['selectedAction'] === 'defend') {
-
+                    speech += player + " failed to defend themselves. ";
                 }
             }
 
@@ -274,14 +332,27 @@ const globalHandlers = {
                 return;
             }
 
-
             // now something to mention the score
             speech += " " + player + " score is " + this.attributes[this.attributes['currentPlayer']].score + ". " + enemy + " score is " + this.attributes[otherPlayer].score;
-            speech += ". " + enemy + " it is your turn now.";
+
+            if (this.attributes['currentPlayer'] === 'playertwo') {
+                this.attributes['roundsCompleted'] += 1;
+            }
 
             this.attributes['currentPlayer'] = otherPlayer;
             this.attributes['selectedAction'] = null;
             this.attributes['activeQuestion'] = getQuestion();
+
+            if (this.attributes['roundsCompleted'] === 3) {
+                this.handler.state = GAME_STATES.ROUNDTWO;
+                speech += ". It is time for round two. In this round you can attack or defend. ";
+                speech += ". " + enemy + " it is your turn now.";
+                this.emit(':ask', speech, "It is time for round two. In this round you can attack or defend.");
+                return;
+            }
+
+            speech += ". " + enemy + " it is your turn now.";
+
             this.emit(':ask', speech, enemy + " it is your turn now.");
         } else {
             this.emit(':ask', "Please respond by starting with " + " The Answer Is");
@@ -291,6 +362,6 @@ const globalHandlers = {
 
 exports.handler = (event, context) => {
     const alexa = Alexa.handler(event, context);
-    alexa.registerHandlers(globalHandlers, startGameHandlers, assignmentHandlers, roundOneHandlers);
+    alexa.registerHandlers(globalHandlers, startGameHandlers, assignmentHandlers, roundOneHandlers, roundTwoHandlers);
     alexa.execute();
 };
